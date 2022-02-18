@@ -71,11 +71,8 @@ class HuntMainActivity : AppCompatActivity() {
         PendingIntent.getBroadcast(this,
             0,
             intent,
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-            } else {
-                PendingIntent.FLAG_UPDATE_CURRENT
-            })
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -296,6 +293,7 @@ class HuntMainActivity : AppCompatActivity() {
             viewModel.geofenceActivated()
             return
         }
+        // Once you have the index and know it is valid, get the data surrounding the geofence.
         val currentGeofenceData = GeofencingConstants.LANDMARK_DATA[currentGeofenceIndex]
 
         // Build the Geofence Object

@@ -73,7 +73,7 @@ internal object GeofencingConstants {
             LatLng(37.808674, -122.409821)),
 
         LandmarkDataObject(
-           "union_square",
+            "union_square",
             R.string.union_square_hint,
             R.string.union_square_location,
             LatLng(37.788151, -122.407570))
