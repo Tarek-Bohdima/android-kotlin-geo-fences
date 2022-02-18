@@ -71,7 +71,11 @@ class HuntMainActivity : AppCompatActivity() {
         PendingIntent.getBroadcast(this,
             0,
             intent,
-            PendingIntent.FLAG_UPDATE_CURRENT
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+            } else {
+                PendingIntent.FLAG_UPDATE_CURRENT
+            }
         )
     }
 
@@ -79,7 +83,7 @@ class HuntMainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_hunt_main)
         viewModel = ViewModelProvider(this, SavedStateViewModelFactory(this.application,
-            this)).get(GeofenceViewModel::class.java)
+            this))[GeofenceViewModel::class.java]
         binding.viewmodel = viewModel
         binding.lifecycleOwner = this
         // TODO: Step 9 instantiate the geofencing client
@@ -132,8 +136,9 @@ class HuntMainActivity : AppCompatActivity() {
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
-        grantResults: IntArray
+        grantResults: IntArray,
     ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         // TODO: Step 5 add code to handle the result of the user's permission
         Log.d(TAG, "onRequestPermissionResult")
 
@@ -332,7 +337,7 @@ class HuntMainActivity : AppCompatActivity() {
                         this@HuntMainActivity,
                         Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 ) {
-                    geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent)?.run {
+                    geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent).run {
                         addOnSuccessListener {
                             // Geofences added.
                             Toast.makeText(this@HuntMainActivity, R.string.geofences_added,
@@ -371,7 +376,7 @@ class HuntMainActivity : AppCompatActivity() {
         if (!foregroundAndBackgroundLocationPermissionApproved()) {
             return
         }
-        geofencingClient.removeGeofences(geofencePendingIntent)?.run {
+        geofencingClient.removeGeofences(geofencePendingIntent).run {
             addOnSuccessListener {
                 // Geofences removed
                 Log.d(TAG, getString(R.string.geofences_removed))
